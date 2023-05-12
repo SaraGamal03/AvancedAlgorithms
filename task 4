@@ -1,47 +1,133 @@
 import java.util.*;
 
-public class CPUScheduler {
-    private PriorityQueue<Job> queue;
+public class task4 {
+    // list of jobs to be scheduled
+    private List<Job> jobs;
 
-    public CPUScheduler() {
-        queue = new PriorityQueue<>();
+    // queue for first-come-first-served scheduling
+    private Queue<Job> fcfsQueue;
+
+    // queue for priority-based scheduling
+    private Queue<Job> priorityQueue;
+
+    // queue for shortest-remaining-time-first scheduling
+    private Queue<Job> srtfQueue;
+
+    // current system time
+    private int currentTime;
+
+    public Main(List<Job> jobs) {
+        this.jobs = jobs;
+        fcfsQueue = new LinkedList<>();
+        priorityQueue = new PriorityQueue<>();
+        srtfQueue = new PriorityQueue<>((j1, j2) -> Integer.compare(j1.getRemainingTime(), j2.getRemainingTime()));
+        currentTime = 0;
     }
 
-    public void addJob(Job job) {
-        queue.offer(job);
-    }
-
-    public void runJobs() {
-        while (!queue.isEmpty()) {
-            Job job = queue.poll();
-            System.out.println("Running job: " + job);
+    // method to run the jobs using the first-come-first-served scheduling policy
+    public void runFCFS() {
+        for (Job job : jobs) {
+            fcfsQueue.offer(job);
+        }
+        while (!fcfsQueue.isEmpty()) {
+            Job job = fcfsQueue.poll();
+            System.out.println("System time [" + currentTime + "] - job " + job.getId() + " is running (FCFS)");
             job.run();
             if (!job.isCompleted()) {
-                queue.offer(job);
+                fcfsQueue.offer(job);
             } else {
-                System.out.println("Job completed: " + job);
+                System.out.println("System time [" + currentTime + "] - job " + job.getId() + " has completed");
             }
+            currentTime++;
+        }
+    }
+
+    // method to run the jobs using the priority-based scheduling policy
+    public void runPriority() {
+        for (Job job : jobs) {
+            priorityQueue.offer(job);
+        }
+        while (!priorityQueue.isEmpty()) {
+            Job job = priorityQueue.poll();
+            System.out.println("System time [" + currentTime + "] - job " + job.getId() + " is running (priority)");
+            job.run();
+            if (!job.isCompleted()) {
+                priorityQueue.offer(job);
+            } else {
+                System.out.println("System time [" + currentTime + "] - job " + job.getId() + " has completed");
+            }
+            currentTime++;
+        }
+    }
+
+    // method to run the jobs using the shortest-remaining-time-first scheduling policy
+    public void runSRTF() {
+        for (Job job : jobs) {
+            srtfQueue.offer(job);
+        }
+        while (!srtfQueue.isEmpty()) {
+            Job job = srtfQueue.poll();
+            System.out.println("System time [" + currentTime + "] - job " + job.getId() + " is running (SRTF)");
+            job.run();
+            if (!job.isCompleted()) {
+                srtfQueue.offer(job);
+            } else {
+                System.out.println("System time [" + currentTime + "] - job " + job.getId() + " has completed");
+            }
+            currentTime++;
         }
     }
 
     public static void main(String[] args) {
-        CPUScheduler scheduler = new CPUScheduler();
-        scheduler.addJob(new Job(1, 5));
-        scheduler.addJob(new Job(5, 3));
-        scheduler.addJob(new Job(10, 7));
-        scheduler.runJobs();
+        List<Job> jobs = new ArrayList<>();
+        Scanner scanner = new Scanner(System.in);
+
+        // read the number of jobs from the user
+        System.out.print("Enter number of jobs: ");
+        int n = scanner.nextInt();
+
+        // read the priority and duration of each job from the user
+        for (int i = 1; i <= n; i++) {
+            System.out.print("Enter job priority and duration for job " + i + ": ");
+            int priority = scanner.nextInt();
+            int duration = scanner.nextInt();
+            jobs.add(new Job(i, priority, duration));
+        }
+
+        scanner.close();
+
+        // create a scheduler object and run the jobs using each policy
+        task4 scheduler = new task4(jobs);
+        scheduler.runFCFS();
+        scheduler = new task4(jobs);
+        scheduler.runPriority();
+        scheduler = new task4(jobs);
+        scheduler.runSRTF();
     }
 }
 
-class Job implements Comparable<Job> {
+class Job {
+    // job ID
+    private int id;
+
+    // job priority (1-10)
     private int priority;
+
+    // job duration (in time slices)
     private int duration;
+
+    // remaining time to complete the job
     private int remainingTime;
 
-    public Job(int priority, int duration) {
+    public Job(int id, int priority, int duration) {
+        this.id = id;
         this.priority = priority;
         this.duration = duration;
-        this.remainingTime = duration;
+        remainingTime = duration;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public int getPriority() {
@@ -52,21 +138,17 @@ class Job implements Comparable<Job> {
         return duration;
     }
 
+    public int getRemainingTime() {
+        return remainingTime;
+    }
+
+    // method to simulate the execution of the job for one time slice
     public void run() {
         remainingTime--;
     }
 
+    // method to check if the job has completed
     public boolean isCompleted() {
         return remainingTime == 0;
-    }
-
-    @Override
-    public int compareTo(Job other) {
-        return Integer.compare(other.priority, this.priority);
-    }
-
-    @Override
-    public String toString() {
-        return "Job(priority=" + priority + ", duration=" + duration + ")";
     }
 }
