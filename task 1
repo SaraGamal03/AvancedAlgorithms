@@ -1,21 +1,22 @@
 import java.util.Arrays;
 
-public class task1{
-
+public class task1 {
     public static void main(String[] args) {
-        char[] arr = {'s', 'a', 'r', 'a', 'a', 'g', 'a', 'm', 'a', 'l'};
+        char[] arr = {'s', 'a', 'r', 'a', 'a', 'g', 'a', 'm', 'm', 'a', 'l'};
         char[] uniqueArr = removeDuplicates(arr);
+        //should print [a, g, l, m, r, s]
         System.out.println(Arrays.toString(uniqueArr)); 
     }
 
     public static char[] removeDuplicates(char[] arr) {
-        boolean[] seen = new boolean[256]; // assumes the ASCII characters
+        // Sort the array
+        Arrays.sort(arr);
+
+        // Remove duplicates by shifting non-duplicate elements to the front
         int uniqueCount = 0;
         for (int i = 0; i < arr.length; i++) {
-            char s = arr[i];
-            if (!seen[s]) {
-                seen[s] = true;
-                arr[uniqueCount] = s;
+            if (i == 0 || arr[i] != arr[i - 1]) {
+                arr[uniqueCount] = arr[i];
                 uniqueCount++;
             }
         }
