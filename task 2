@@ -1,0 +1,24 @@
+import java.util.*;
+
+public class task2 {
+    public static void main(String[] args) {
+        int[] arr1 = {1, 2, 3, 6, 4};
+        int[] arr2 = {5, 9, 7, 1, 0};
+        boolean sim = sim(arr1, arr2);
+        System.out.println(sim); // prints "true"
+    }
+
+    public static boolean sim(int[] arr1, int[] arr2) {
+        // Sorts both arrays
+        Arrays.sort(arr1);
+        Arrays.sort(arr2);
+
+        // Compares the sorted arrays element by element
+        for (int i = 0; i < arr1.length; i++) {
+            if (arr1[i] != arr2[i]) {
+                return false;
+            }
+        }
+        return true;
+    }
+}
