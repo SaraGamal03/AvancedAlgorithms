@@ -1,0 +1,121 @@
+import java.util.*;
+
+public class task5 {
+        //defined the class name, defined the cariable data types
+    private static class Node {
+        char val;
+        Node left, right;
+        int value;
+
+        public Node(char val) {
+            this.val = val;
+            left = null;
+            right = null;
+            value = 0;
+        }
+        //added the operations available
+        public boolean isOperator() {
+            return val == '+' || val == '-' || val == '*' || val == '/';
+        }
+        // evaluates the operation
+        public int evaluate() {
+            if (!isOperator()) {
+                return value;
+            }
+
+            int leftValue = left.evaluate();
+            int rightValue = right.evaluate();
+
+            switch (val) {
+                case '+':
+                    return leftValue + rightValue;
+                case '-':
+                    return leftValue - rightValue;
+                case '*':
+                    return leftValue * rightValue;
+                case '/':
+                    return leftValue / rightValue;
+                default:
+                    return 0;
+            }
+        }
+
+        public void print(int indent) {
+            for (int i = 0; i < indent; i++) {
+                System.out.print(" ");
+            }
+            if (!isOperator()) {
+                System.out.println("Leaf(" + value + ")");
+            } else {
+                System.out.println("Node(" + val + ")");
+                left.print(indent + 2);
+                right.print(indent + 2);
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("please enter the arithmetic expression: ");
+        String expression = scanner.nextLine();
+
+        Node root = Tree(expression);
+
+        System.out.println("the start in the expression tree:");
+        root.print(0);
+        System.out.println("the value of the root is: " + root.evaluate());
+
+        while (true) {
+            System.out.print("please enter a variable name to update or type exit: ");
+            String variable = scanner.nextLine();
+            if (variable.equals("exit")) {
+                break;
+            }
+            System.out.print("please enter a new value for " + variable + ": ");
+            int value = scanner.nextInt();
+            scanner.nextLine(); 
+
+            updateVariable(root, variable.charAt(0), value);
+
+            System.out.println("the updated expression tree is:");
+            root.print(0);
+            System.out.println("the value of the root is: " + root.evaluate());
+        }
+
+        scanner.close();
+    }
+
+    private static Node Tree(String expression) {
+        expression = expression.replaceAll("\\s+", "");
+        if (expression.charAt(0) != '(') {
+            return new Node(expression.charAt(0));
+        }
+        int count = 0;
+        int i;
+        for (i = 1; i < expression.length(); i++) {
+            if (expression.charAt(i) == '(') {
+                count++;
+            } else if (expression.charAt(i) == ')') {
+                count--;
+            } else if (count == 0 && (expression.charAt(i) == '+' || expression.charAt(i) == '-' || expression.charAt(i) == '*' || expression.charAt(i) == '/')) {
+                break;
+            }
+        }
+        //Created a node for the root operator and recursively built the left and the right subtrees
+        Node root = new Node(expression.charAt(i));
+        root.left = Tree(expression.substring(1, i));
+        root.right = Tree(expression.substring(i + 1, expression.length() - 1));
+        return root;
+    }
+    //the variable in the left and the right subtree gets updated recursively 
+    private static void updateVariable(Node node, char variable, int value) {
+        if (!node.isOperator()) {
+            if (node.val == variable) {
+                node.value = value;
+            }
+        } else {
+            updateVariable(node.left, variable, value);
+            updateVariable(node.right, variable, value);
+        }
+    }
+}
