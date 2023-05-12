@@ -1,0 +1,61 @@
+import java.util.*;
+
+public class task7 {
+
+    public static void main(String[] args) {
+        List<Integer> list = new ArrayList<>();
+        list.add(52);
+        list.add(67);
+        list.add(26);
+        list.add(12);
+        list.add(90);
+        
+
+        System.out.println("Unsorted list is: " + list);
+
+        heapSort(list);
+
+        System.out.println("Sorted list is: " + list);
+    }
+
+    public static void heapSort(List<Integer> list) {
+        // the initial min heap
+        MinHeap(list);
+
+        // chooses the minimum element many times to get a sorted list
+        for (int i = list.size() - 1; i > 0; i--) {
+            // this swaps the minimum element with the last element in the heap
+            int temp = list.get(0);
+            list.set(0, list.get(i));
+            list.set(i, temp);
+
+            // Maintain the min heap property by sinking the new root element
+            sink(list, 0, i);
+        }
+    }
+
+    // Build a min heap from the given list
+    private static void MinHeap(List<Integer> list) {
+        int n = list.size();
+        for (int i = n / 2 - 1; i >= 0; i--) {
+            sink(list, i, n);
+        }
+    }
+
+    // Sink the element at the given index to maintain the min heap property
+    private static void sink(List<Integer> list, int i, int n) {
+        while (2 * i + 1 < n) {
+            int j = 2 * i + 1;
+            if (j + 1 < n && list.get(j + 1) < list.get(j)) {
+                j++;
+            }
+            if (list.get(i) <= list.get(j)) {
+                break;
+            }
+            int temp = list.get(i);
+            list.set(i, list.get(j));
+            list.set(j, temp);
+            i = j;
+        }
+    }
+}
