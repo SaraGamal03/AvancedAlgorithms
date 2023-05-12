@@ -1,0 +1,84 @@
+import java.util.*;
+
+public class task6 {
+    // a data structure of maintaining all unique words that appears in the given data set was added named lexicon
+    private String[] lexicon;
+
+    public task6(String[] lexicon) {
+        this.lexicon = lexicon;
+    }
+
+    public List<String> check(String s) {
+        List<String> Testcase = new ArrayList<>();
+
+        if (contains(s)) {
+            Testcase.add(s);
+            return Testcase;
+        }
+
+        // Checks for character swaps that are next to each other 
+        for (int i = 0; i < s.length() - 1; i++) {
+            String swap = swap(s, i, i + 1);
+            if (contains(swap)) {
+                Testcase.add(swap);
+            }
+        }
+
+        // Checks for a single character insertions
+        for (int i = 0; i <= s.length(); i++) {
+            for (char c = 'a'; c <= 'z'; c++) {
+                String insert = s.substring(0, i) + c + s.substring(i);
+                if (contains(insert)) {
+                    Testcase.add(insert);
+                }
+            }
+        }
+
+        // Checks for deleting a single character 
+        for (int i = 0; i < s.length(); i++) {
+            String delete = s.substring(0, i) + s.substring(i + 1);
+            if (contains(delete)) {
+                Testcase.add(delete);
+            }
+        }
+
+        return Testcase;
+    }
+
+    // checks if a word is in the lexicon
+    private boolean contains(String word) {
+        for (String w : lexicon) {
+            if (w.equals(word)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // this swaps characters that are next to each other in a string
+    private String swap(String s, int i, int j) {
+        char[] chars = s.toCharArray();
+        char temp = chars[i];
+        chars[i] = chars[j];
+        chars[j] = temp;
+        return new String(chars);
+    }
+    // driver code to test out the code for insertion,deletion or swapping characters
+    
+    public static void main(String[] args) {
+        String[] lexicon = {"dog", "panda"};
+
+        task6 checker = new task6(lexicon);
+        
+        //testcases
+        List<String> 
+        Testcase = checker.check("doo");
+        System.out.println("Testcase for 'doo': " + Testcase);
+    
+        Testcase = checker.check("pand");
+        System.out.println("Testcase for 'pand': " + Testcase);
+
+        
+
+    }
+}
