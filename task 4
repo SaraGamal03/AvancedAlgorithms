@@ -16,7 +16,7 @@ public class task4 {
     // current system time
     private int currentTime;
 
-    public Main(List<Job> jobs) {
+    public task4(List<Job> jobs) {
         this.jobs = jobs;
         fcfsQueue = new LinkedList<>();
         priorityQueue = new PriorityQueue<>();
