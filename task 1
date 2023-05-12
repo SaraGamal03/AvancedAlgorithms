@@ -1,0 +1,24 @@
+import java.util.Arrays;
+
+public class task1{
+
+    public static void main(String[] args) {
+        char[] arr = {'s', 'a', 'r', 'a', 'a', 'g', 'a', 'm', 'a', 'l'};
+        char[] uniqueArr = removeDuplicates(arr);
+        System.out.println(Arrays.toString(uniqueArr)); 
+    }
+
+    public static char[] removeDuplicates(char[] arr) {
+        boolean[] seen = new boolean[256]; // assumes the ASCII characters
+        int uniqueCount = 0;
+        for (int i = 0; i < arr.length; i++) {
+            char s = arr[i];
+            if (!seen[s]) {
+                seen[c] = true;
+                arr[uniqueCount] = s;
+                uniqueCount++;
+            }
+        }
+        return Arrays.copyOf(arr, uniqueCount);
+    }
+}
